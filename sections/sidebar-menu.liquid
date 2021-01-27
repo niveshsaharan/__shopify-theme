@@ -81,41 +81,8 @@
         {%- endcapture -%}
       {%- endif -%}
 
-      {%- if settings.currency_conversion_enabled or shop.enabled_currencies.size > 1 or social_media != blank -%}
+      {%- if social_media != blank -%}
         <aside class="Drawer__Footer" data-drawer-animated-bottom>
-          {%- if settings.currency_conversion_enabled or shop.enabled_currencies.size > 1 -%}
-            <div class="SidebarMenu__CurrencySelector">
-              <div class="Select Select--transparent">
-                {% comment %}
-                {%- if shop.enabled_currencies.size > 1 -%}
-                  {%- form 'currency', id: 'mobile_currency_form' -%}
-                    <select class="CurrencySelector__Select" name="currency" title="{{ 'header.navigation.currency_selector' | t | escape }}" onchange="this.form.submit()">
-                      {%- for currency in shop.enabled_currencies -%}
-                        <option value="{{ currency.iso_code }}" {% if cart.currency == currency %}selected="selected"{% endif %}>{{ currency.iso_code }}</option>
-                      {%- endfor -%}
-                    </select>
-                  {%- endform -%}
-                {%- else -%}
-                  <select class="CurrencySelector__Select" title="{{ 'header.navigation.currency_selector' | t | escape }}">
-                    {%- capture codes -%}USD,EUR,GBP,CAD,ARS,AUD,BBD,BDT,BSD,BHD,BRL,BOB,BND,BGN,BWP,MMK,KYD,CLP,CNY,COP,CRC,HRK,CZK,DKK,DOP,XCD,EGP,XPF,FJD,GHS,GTQ,GYD,GEL,HKD,HUF,ILS,ISK,INR,IDR,NIS,JMD,JPY,JOD,KZT,KES,KWD,LVL,LTL,MXN,MYR,MUR,MDL,MAD,MNT,MZN,ANG,NZD,NGN,NOK,OMR,PKR,PYG,PEN,PHP,PLN,QAR,RON,RUB,SAR,RSD,SCR,SGD,SYP,ZAR,KRW,LKR,SEK,CHF,TWD,THB,TZS,TTD,TRY,UAH,AED,UYU,VEB,VND,ZMK{%- endcapture -%}
-                    {%- assign supported_codes = settings.currency_conversion_supported_currencies | remove_first: shop.currency | upcase | split: ' ' | uniq -%}
-
-                    <option value="{{ shop.currency }}" selected="selected">{{ shop.currency }}</option>
-
-                    {%- for code in supported_codes -%}
-                      {%- if codes contains code -%}
-                        <option value="{{ code }}">{{ code }}</option>
-                      {%- endif -%}
-                    {%- endfor -%}
-                  </select>
-                {%- endif -%}
-
-                {%- render 'icon' with 'select-arrow' -%}
-                {% endcomment %}
-              </div>
-            </div>
-          {%- endif -%}
-
           {%- if social_media != blank -%}
             {{ social_media }}
           {%- endif -%}

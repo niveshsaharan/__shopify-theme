@@ -36,18 +36,19 @@
         --------------------------------------------------------------------------------------------------------------------
         {%- endcomment -%}
 
-        {%- if product.images.size > 0 -%}
+        {%- if product.media.size > 0 -%}
           <a href="{{ product.url }}" class="FeaturedProduct__Gallery">
-            {%- capture supported_sizes -%}{%- render 'image-size', sizes: '200,300,400,600,700,800,900,1000', image: product.featured_image -%}{%- endcapture -%}
+            {%- capture supported_sizes -%}{%- render 'image-size', sizes: '200,300,400,600,700,800,900,1000', image: product.featured_media -%}{%- endcapture -%}
 
-            <div class="AspectRatio" style="max-width: {{ product.featured_image.width }}px; --aspect-ratio: {{ product.featured_image.aspect_ratio }}">
-              {% assign image_url = product.featured_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' %}
+            {%- assign media_aspect_ratio = product.featured_media.aspect_ratio | default: product.featured_media.preview_image.aspect_ratio -%}
+            <div class="AspectRatio" style="max-width: {{ product.featured_media.preview_image.width }}px; --aspect-ratio: {{ media_aspect_ratio }}">
+              {% assign image_url = product.featured_media | img_url: '1x1' | replace: '_1x1.', '_{width}x.' %}
 
-              <img class="Image--lazyLoad Image--fadeIn" data-src="{{ image_url }}" data-widths="[{{ supported_sizes }}]" data-sizes="auto" alt="{{ product.featured_image.alt | escape }}">
+              <img class="Image--lazyLoad Image--fadeIn" data-src="{{ image_url }}" data-widths="[{{ supported_sizes }}]" data-sizes="auto" alt="{{ product.featured_media.alt | escape }}">
               <span class="Image__Loader"></span>
 
               <noscript>
-                <img src="{{ product.featured_image | img_url: '600x' }}" alt="{{ product.featured_image.alt | escape }}">
+                <img src="{{ product.featured_media | img_url: '600x' }}" alt="{{ product.featured_media.alt | escape }}">
               </noscript>
             </div>
           </a>
@@ -95,7 +96,7 @@
             <h1 class="ProductMeta__Title Heading u-h2">{{ 'home_page.onboarding.product_title' | t }}</h1>
 
             <div class="ProductMeta__PriceList Heading">
-              <span class="ProductMeta__Price Price Text--subdued u-h4" data-money-convertible>{{ 4500 | money_without_trailing_zeros }}</span>
+              <span class="ProductMeta__Price Price Text--subdued u-h4">{{ 4500 | money_without_trailing_zeros }}</span>
             </div>
 
             {%- if section.settings.show_description and section.settings.show_description_after_add_to_cart == false -%}
@@ -121,7 +122,7 @@
 
               {%- if section.settings.show_price_in_button -%}
                 <span class="Button__SeparatorDot"></span>
-                <span data-money-convertible>{{ 4500 | money_without_trailing_zeros }}</span>
+                <span>{{ 4500 | money_without_trailing_zeros }}</span>
               {%- endif -%}
             </button>
           </div>
@@ -138,11 +139,7 @@
         </div>
       {%- endif -%}
     </div>
-  
-<!-- **BEGIN** Hextom USB Integration // Home Featured Product Include - DO NOT MODIFY -->
-    {% render 'hextom_usb_home_featured_prod', product: product %}
-    <!-- **END** Hextom USB Integration // Home Featured Product Include - DO NOT MODIFY -->
-</div>
+  </div>
 
   {%- comment -%}
   --------------------------------------------------------------------------------------------------------------------
@@ -270,6 +267,13 @@
       "label": "Show dynamic checkout button",
       "info": "Each customer will see their preferred payment method from those available on your store, such as PayPal or Apple Pay. [Learn more](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
       "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pickup_availability",
+      "label": "Show local pickup availability",
+      "info": "Show customers where they can pick up the product. [Learn more](https://help.shopify.com/en/manual/shipping/setting-up-and-managing-your-shipping/local-methods/local-pickup#show-pickup-availability-to-your-customers)",
+      "default": false
     }
   ],
   "presets": [

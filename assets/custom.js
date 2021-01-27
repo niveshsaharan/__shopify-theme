@@ -22,8 +22,3 @@
  *   bubbles: true
  * }));
  */
-
-
-document.addEventListener('product:added', function(event) {
-  pintrk('track', 'addtocart');
-});

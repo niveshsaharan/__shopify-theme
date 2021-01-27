@@ -8,7 +8,7 @@
   {%- assign add_top_margin = false -%}
 {%- endif -%}
 
-<footer id="section-{{ section.id }}" class="Footer {% if section.blocks.size <= 2 %}Footer--center{% endif %} {% if add_top_margin %}Footer--withMargin{% endif %}" role="contentinfo">
+<footer id="section-{{ section.id }}" data-section-id="{{ section.id }}" data-section-type="footer" class="Footer {% if section.blocks.size <= 2 %}Footer--center{% endif %} {% if add_top_margin %}Footer--withMargin{% endif %}" role="contentinfo">
   <div class="Container">
     {%- if section.blocks.size > 0 -%}
       <div class="Footer__Inner">
@@ -25,11 +25,7 @@
                     {{ block.settings.content }}
                   </div>
                 {%- endif -%}
-            <!-- TrustBox widget - Micro Star -->
-            <div class="trustpilot-widget" data-locale="en-US" data-template-id="5419b732fbfb950b10de65e5" data-businessunit-id="598b96110000ff0005a8854d" data-style-height="24px" data-style-width="100%" data-theme="light">
-              <a href="https://www.trustpilot.com/review/dsrcv.com" target="_blank" rel="noopener">Trustpilot</a>
-            </div>
-            <!-- End TrustBox widget -->
+
                 {%- if block.settings.show_social_media -%}
                   {% render 'social-media', class: 'Footer__Social', spacing: 'loose' %}
                 {%- endif -%}
@@ -80,6 +76,78 @@
     {%- endif -%}
 
     <div class="Footer__Aside">
+      {%- if section.settings.show_currency_selector and shop.enabled_currencies.size > 1 -%}
+        {%- assign currency_selector = true -%}
+      {%- endif -%}
+
+      {%- if section.settings.show_locale_selector and shop.published_locales.size > 1 -%}
+        {%- assign locale_selector = true -%}
+      {%- endif -%}
+
+      {%- if locale_selector or currency_selector -%}
+        <div class="Footer__Localization">
+          {%- form 'localization', id: 'localization_form_footer', class: 'Footer__LocalizationForm' -%}
+            {%- if currency_selector -%}
+              <div class="Footer__LocalizationItem">
+                <input type="hidden" name="currency_code" value="{{ form.current_currency.iso_code }}">
+                <span class="u-visually-hidden">{{ 'footer.general.currency' | t }}</span>
+
+                <button type="button" class="SelectButton Link Link--primary u-h8" aria-haspopup="true" aria-expanded="false" aria-controls="footer-currency-popover">
+                  {{ form.current_currency.iso_code }} {% if form.current_currency.symbol %}{{ form.current_currency.symbol }}{% endif %}
+                  {%- render 'icon', icon: 'select-arrow' -%}
+                </button>
+
+                <div id="footer-currency-popover" class="Popover Popover--small Popover--noWrap" aria-hidden="true">
+                  <header class="Popover__Header">
+                    <button type="button" class="Popover__Close Icon-Wrapper--clickable" data-action="close-popover">{% render 'icon' with 'close' %}</button>
+                    <span class="Popover__Title Heading u-h4">{{ 'footer.general.currency' | t }}</span>
+                  </header>
+
+                  <div class="Popover__Content">
+                    <div class="Popover__ValueList Popover__ValueList--center" data-scrollable>
+                      {%- for currency in form.available_currencies -%}
+                        <button type="submit" name="currency_code" class="Popover__Value {% if currency.iso_code == form.current_currency.iso_code %}is-selected{% endif %} Heading Link Link--primary u-h6"  value="{{ currency.iso_code }}" {% if currency.iso_code == form.current_currency.iso_code %}aria-current="true"{% endif %}>
+                          {{ currency.iso_code }} {% if currency.symbol %}{{ currency.symbol }}{% endif %}
+                        </button>
+                      {%- endfor -%}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {%- endif -%}
+
+            {%- if locale_selector -%}
+              <div class="Footer__LocalizationItem">
+                <input type="hidden" name="locale_code" value="{{ form.current_locale.iso_code }}">
+                <span class="u-visually-hidden">{{ 'footer.general.locale' | t }}</span>
+
+                <button type="button" class="SelectButton Link Link--primary u-h8" aria-haspopup="true" aria-expanded="false" aria-controls="footer-locale-popover">
+                  {{- form.current_locale.endonym_name -}}
+                  {%- render 'icon', icon: 'select-arrow' -%}
+                </button>
+
+                <div id="footer-locale-popover" class="Popover Popover--small Popover--noWrap" aria-hidden="true">
+                  <header class="Popover__Header">
+                    <button type="button" class="Popover__Close Icon-Wrapper--clickable" data-action="close-popover">{% render 'icon' with 'close' %}</button>
+                    <span class="Popover__Title Heading u-h4">{{ 'footer.general.locale' | t }}</span>
+                  </header>
+
+                  <div class="Popover__Content">
+                    <div class="Popover__ValueList Popover__ValueList--center" data-scrollable>
+                      {%- for locale in form.available_locales -%}
+                        <button type="submit" name="locale_code" class="Popover__Value {% if locale.iso_code == form.current_locale.iso_code %}is-selected{% endif %} Heading Link Link--primary u-h6" value="{{ locale.iso_code }}" {% if locale.iso_code == form.current_locale.iso_code %}aria-current="true"{% endif %}>
+                          {{- locale.endonym_name -}}
+                        </button>
+                      {%- endfor -%}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {%- endif -%}
+          {%- endform -%}
+        </div>
+      {%- endif -%}
+
       <div class="Footer__Copyright">
         <a href="{{ routes.root_url }}" class="Footer__StoreName Heading u-h7 Link Link--secondary">© {{ shop.name }}</a>
         <p class="Footer__ThemeAuthor">{{ powered_by_link }}</p>
@@ -102,6 +170,14 @@
   </div>
 </footer>
 
+{%- if settings.footer_background == settings.background -%}
+  <style>
+    .Footer {
+      border-top: 1px solid var(--border-color);
+    }
+  </style>
+{%- endif -%}
+
 {% schema %}
 {
   "name": "Footer",
@@ -112,6 +188,28 @@
       "id": "show_payment_methods",
       "label": "Show payment methods",
       "info": "Payment method icons are automatically displayed based on your Shopify payment methods.",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Currency selector",
+      "info": "To add a currency, go to your [payment settings.](/admin/settings/payments)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_currency_selector",
+      "label": "Show currency selector",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Language selector",
+      "info": "To add a language, go to your [language settings.](/admin/settings/languages)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_locale_selector",
+      "label": "Show language selector",
       "default": true
     }
   ],

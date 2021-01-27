@@ -18,13 +18,17 @@
   "settings": [
     {
       "type": "paragraph",
-      "content": "Background videos are automatically muted to allow autoplay on mobile. If you require audio, use the \"Featured Video\" section."
+      "content": "Background videos are automatically muted to allow autoplay. If you require audio, use the \"Featured Video\" section."
     },
     {
       "type": "select",
       "id": "section_size",
       "label": "Section size",
       "options": [
+        {
+          "value": "preserveRatio",
+          "label": "Preserve original ratio"
+        },
         {
           "value": "small",
           "label": "Small"
@@ -38,7 +42,7 @@
           "label": "Large"
         }
       ],
-      "default": "large"
+      "default": "preserveRatio"
     },
     {
       "type": "video_url",

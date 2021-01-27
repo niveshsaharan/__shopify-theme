@@ -6,7 +6,9 @@
     },
 
     "accessibility": {
-      "scroll_to_content": "Accéder au contenu"
+      "scroll_to_content": "Accéder au contenu",
+      "previous": "Précédent",
+      "next": "Suivant"
     },
 
     "announcement_bar": {
@@ -40,6 +42,11 @@
   },
 
   "header": {
+    "general": {
+      "locale": "Langue",
+      "currency": "Devise"
+    },
+
     "navigation": {
       "title": "Navigation principale",
       "sidebar_title": "Navigation latérale",
@@ -47,6 +54,7 @@
       "close_sidebar": "Fermer la navigation",
       "account": "Compte",
       "search": "Recherche",
+      "close_search": "Fermer la recherche",
       "cart": "Panier",
       "open_cart": "Ouvrir le panier",
       "close_cart": "Fermer le panier",
@@ -56,6 +64,11 @@
   },
 
   "footer": {
+    "general": {
+      "locale": "Langue",
+      "currency": "Devise"
+    },
+
     "newsletter": {
       "success": "Vous avez été inscrit à notre newsletter.",
       "input": "Entrez votre email",
@@ -323,6 +336,12 @@
   },
 
   "product": {
+    "general": {
+      "view_in_space": "Afficher dans votre espace",
+      "include_taxes": "Taxes incluses.",
+      "shipping_policy_html": "<a href=\"{{ link }}\" class=\"link link--accented\">Frais de port<\/a> calculés au paiement."
+    },
+
     "labels": {
       "sold_out": "Rupture",
       "on_sale": "En solde"
@@ -366,6 +385,17 @@
 
     "buy_it_with": {
       "title": "Achetez également"
+    }
+  },
+
+  "store_availability": {
+    "general": {
+      "view_store_info": "Afficher les informations de la boutique",
+      "check_other_stores": "Vérifier la disponibilité dans d'autres boutiques",
+      "pick_up_available": "Récupération disponible",
+      "pick_up_currently_unavailable": "Récupération actuellement indisponible",
+      "pick_up_available_at_html": "Récupération disponible à <strong>{{ location_name }}</strong>",
+      "pick_up_unavailable_at_html": "Récupération actuellement indisponible à <strong>{{ location_name }}</strong>"
     }
   },
 

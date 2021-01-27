@@ -46,6 +46,20 @@
     </div>
   </div>
 
+  {%- if settings.light_background == settings.background -%}
+    <style>
+      .FeaturedMap__Info {
+        padding: 0 0 40px 0;
+      }
+
+      @media screen and (min-width: 641px) {
+        .FeaturedMap__Info {
+          padding-left: 40px;
+        }
+      }
+    </style>
+  {%- endif -%}
+
   <script type="application/json" data-gmap-style>
     {%- case section.settings.map_style -%}
       {%- when 'standard' -%}
