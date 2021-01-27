@@ -1,0 +1,11 @@
+<script>
+  window.shopifyMultiCurrencies = [];
+  {% for currency in shop.enabled_currencies %}
+      window.shopifyMultiCurrencies.push('{{ currency.iso_code }}');
+  {% endfor %}
+  window.shopFormat = {{ shop.money_format | json }};
+</script>
+{{ "//cdn.shopify.com/s/javascripts/currencies.js" | script_tag }}
+<script src="//cdn.plusbooster.com/currency/pb_currency-switcher.js" type="text/javascript"></script>
+<link href="//cdn.plusbooster.com/currency/pb_currency.css" rel="stylesheet" type="text/css" media="all" />
+{{ 'pb_custom.css' | asset_url | stylesheet_tag }}

@@ -1,0 +1,171 @@
+{%- if section.settings.enable_bar -%}
+  
+  {%- capture FSBExtension_Content -%}
+  {%- if section.blocks.size > 0 -%}
+  	<div id="section-{{ section.id }}" class="FSBExtension">
+      <div class="FSBExtension__Slides">
+        {%- for block in section.blocks -%}
+          {%- if block.settings.content != blank -%}
+            {%- if block.settings.amount != blank and block.settings.content contains '[[amount]]' -%}
+              {%- assign amount = block.settings.amount | prepend: '<span class="FSBExtension_Price">' | append: '</span>' -%}
+            {%- endif -%}
+
+            <p class="FSBExtension__Slide">
+              {%- if section.settings.link -%}
+              <a href="{{ block.settings.link }}">{{ block.settings.content | replace: '[[amount]]', amount }}</a>
+              {%- else -%}
+              {{ block.settings.content | replace: '[[amount]]', amount }}
+              {%- endif -%}
+            </p>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+  {%- endcapture -%}
+
+  {%- if FSBExtension_Content != blank -%}
+    <style>
+      @media (max-width: 600px) {
+        div#fsb_container {
+          margin-bottom: 0 !important;
+        }
+      }
+      #section-{{ section.id }} {
+        background: {{ section.settings.background }};
+        color: {{ section.settings.text_color }};
+        display:none;
+      }
+      #section-fsb-extension {
+        position: relative;
+        font-size: 12px;
+      }
+      a.FSBExtension__Slide_details {
+        margin-left: 20px;
+        cursor:pointer;
+        font-weight: bold;
+      }
+      .FSBExtension__Slides {
+        text-align: center;
+      }
+      .FSBExtension__Slides p {
+        margin: 0;
+        padding: 6px;
+        text-transform: uppercase;
+        border-bottom: 1px solid {{ section.settings.text_color }};
+      }
+      @media(max-width:600px){
+        div#fsb_container {
+          margin-bottom: 14px;
+        }
+      }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="{{ 'shopify-money.js' | asset_url }}"></script>
+    <script>
+      var fsb_html = `{{FSBExtension_Content}}`;
+      var FSBExtension__Section= '#section-{{ section.id }}';
+      var see_details_link = '<a class="FSBExtension__Slide_details Link closed">&#65291;</a>';
+
+      var waitForEl = function(selector, callback) {
+        if (jQuery(selector).length) {
+          callback();
+        } else {
+          setTimeout(function() {
+            waitForEl(selector, callback);
+          }, 100);
+        }
+      };
+      
+      function _init_FSBExtension(){
+        jQuery(FSBExtension__Section).remove();
+        jQuery('#fsb_container').after(fsb_html);
+
+        jQuery(".FSBExtension__Slide span.FSBExtension_Price").each(function( index ) {
+          let fsb_amount = jQuery(this).text();
+          jQuery(this).text(Shopify.formatMoney(jQuery(this).text()*100*Shopify.currency.rate, shopMoneyWithCurrencyFormat));
+        });
+
+        jQuery('#fsb_bar').append(see_details_link);
+        jQuery("#fsb_container").css("height",jQuery("#fsb_bar").outerHeight());
+        if($('.FSBExtension__Slide').length <= 0) $('a.FSBExtension__Slide_details').hide()
+      }
+
+      jQuery( "body" ).on( "fsb_fully_loaded", "#fsb_container", function() {
+        _init_FSBExtension();
+      });
+      
+      window.addEventListener('Upside::UCD::FSBExtension__Slide_Reload', function(e){
+      _init_FSBExtension();
+      });
+      
+
+      jQuery( "body" ).on( "click", "#fsb_container a.FSBExtension__Slide_details.closed", function() {
+          jQuery(this).html('&#65293;');
+          jQuery(this).removeClass('closed').addClass('opened');
+          jQuery(FSBExtension__Section).slideDown(500);
+      });
+
+      jQuery( "body" ).on( "click", "#fsb_container a.FSBExtension__Slide_details.opened", function() {
+          jQuery(this).html('&#65291;');
+          jQuery(this).removeClass('opened').addClass('closed');
+          jQuery(FSBExtension__Section).slideUp(500);
+      });
+
+
+    </script>
+  {%- endif -%}
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "FSB extension",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_bar",
+      "label": "Enable bar",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#ffffff"
+    }
+  
+  ],
+  "blocks": [
+    {
+      "type": "text",
+      "name": "Slide",
+      "settings": [
+        {
+          "type": "text",
+          "id": "content",
+          "label": "Text",
+          "default": "Announce something here",
+ 		  "info": "To add amount in text put the text like this: [[amount]]. For example, '20% OFF on orders over [[amount]]'."
+        },
+        {
+          "type": "text",
+          "id": "amount",
+          "label": "Amount",
+ 		  "info": "Put the amount here which you want to add in the above text. Make sure its a number. e.g. 50. Also make sure you the amount is in your store's currency."
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
